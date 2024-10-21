@@ -1,9 +1,18 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
+// Define protected and public routes
 const isProtectedRoute = createRouteMatcher(["/"]);
+const publicRoutes = ["/api/uploadthing"];
 
 export default clerkMiddleware((auth, req) => {
-  if (isProtectedRoute(req)) auth().protect();
+  if (publicRoutes.includes(req.nextUrl.pathname)) {
+    return; 
+  }
+
+  // Protect other routes
+  if (isProtectedRoute(req)) {
+    auth().protect();
+  }
 });
 
 export const config = {
